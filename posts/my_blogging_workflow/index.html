@@ -225,7 +225,7 @@
 <p>打开 Google Photos（使用 Chrome 的 Install App 功能添加到桌面），Ctrl C。电脑上的截图则是 fn + f1 （snipaste 截图快捷键），Ctrl C。</p>
 <p>打开 Obsidian 文档， Ctrl V。如果有多张照片/截图，还可以先多次 Ctrl C，再使用 Win + V 打开系统 clipboard （如下图）多次粘贴。</p>
 <p><img src="https://misty-limit-424f.allison-00c.workers.dev/2025/01/5adbfbfc24ca73891c46b47f27e34da4.webp" alt="image.png|600"></p>
-<p>执行粘贴动作后 Image atuo upload 插件自动调用 PicList，PicList 将图片重命名、去除 exif data、转格式为 webp 后上传至 Backblaze，返回 markdown 图片链接，像上图 Ctrl V 后最终呈现在 Obsidan 里的是 <code>![image.png|600](https://misty-limit-424f.allison-00c.workers.dev/2025/01/c73894ff0eebabc1c0eccfa07ebe5f4a.webp)</code> 。</p>
+<p>执行粘贴动作后 Image atuo upload 插件自动调用 PicList，PicList 将图片重命名、去除 exif data、转格式为 webp 后上传至 Backblaze，返回 markdown 图片链接，像上图 Ctrl V 后最终呈现在 Obsidian 里的是 <code>![image.png|600](https://misty-limit-424f.allison-00c.workers.dev/2025/01/c73894ff0eebabc1c0eccfa07ebe5f4a.webp)</code> 。</p>
 <p>Cloudflare Worker 起的作用是通过 application key 访问 Backblaze 的 private bucket 将图片缓存并生成一个 Worker 链接使之公开可见。在 PicList 中设定自定义域名，也就是 Worker 地址，返回的是转义后的链接，避免个人 bucket 地址暴露，同时还利用 Cloudflare 的缓存减少对 Object Storage 的访问。唯一的问题是，国内 IP 看不到 Cloudflare 的图片，但这不是我能控制的了。</p>
 <p>实现过程颇为复杂，等我试验一段时间确认完全没问题会再写详细操作，但后续的维护很轻松，插入图片所有我进行的只是两个键盘动作，Ctrl C、Ctrl V 而已。</p>
 <h2 id="审校">审校</h2>
