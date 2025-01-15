@@ -13,6 +13,81 @@
     
     
     <item>
+<title>我的博客写作流程</title>
+<link>https://thewanderingallison.github.io/posts/my_blogging_workflow/</link>
+<pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://thewanderingallison.github.io/posts/my_blogging_workflow/</guid>
+<description>
+    &lt;h2 id=&#34;动机&#34;&gt;动机&lt;/h2&gt;
+&lt;p&gt;过去在互联网上我一向话不算多，正因如此，极少数有强烈表达欲的时刻被豆瓣或者微博删帖、禁言才更让我生气。恰好那时转移到了长毛象，发现同时兴起了一股博客复兴潮。很久之前我在新浪有个博客，也始终是 RSS 的忠实使用者，读博客的习惯从未落下，真的写起来也就毫无困难。搭博客也比我以为的简单许多，2020 年底我在一行代码也不懂的情况下也顺利地用不到两天的时间借助 Hugo 和 GitHub Pages 让博客成功运行至今。&lt;/p&gt;
+&lt;p&gt;但是为了保证打字的流畅，陆续地我加上了不少工具以避免额外劳动，这篇就是我常规的博客运作流程。&lt;/p&gt;
+&lt;h2 id=&#34;灵感收集&#34;&gt;灵感收集&lt;/h2&gt;
+&lt;p&gt;怎么写，写什么，每个人有不同的兴趣和表达方式，重要的是有想法就尽量及时保存。&lt;/p&gt;
+&lt;p&gt;书桌上纸质笔记本，在不开电子设备（尤其看纸质书）时写。电脑，Obsidian。手机平板，Google Keep。出门行程较长时（长时间地铁或跨城高铁）会带随身手账本在路上记录。&lt;/p&gt;
+&lt;h2 id=&#34;写作&#34;&gt;写作&lt;/h2&gt;
+&lt;p&gt;录入都在电脑 Obsidian 里完成。&lt;/p&gt;
+&lt;p&gt;大部分内容会打大纲，写得顺全程键盘，写得不顺就换纸笔，重新理提纲，闷头把能想到的全一股脑记下来，草稿写完再整理思路，删减、调整结构。偶尔在笔记本上会一口气倾倒十页八页的废话，最后电脑输入只用一半甚至三分之一。&lt;/p&gt;
+&lt;p&gt;输入法是微软拼音（小鹤双拼），效率比全拼高多了！&lt;/p&gt;
+&lt;h2 id=&#34;排版&#34;&gt;排版&lt;/h2&gt;
+&lt;h3 id=&#34;文字&#34;&gt;文字&lt;/h3&gt;
+&lt;p&gt;Metadata，用 obsidian 的 template + 自定义快捷键自动插入。&lt;/p&gt;
+&lt;p&gt;数字、中英文混排自动插入空格，标点符号自动补全，连续输入全角转半角等功能依靠 Obsidian 的 Easy Typing 插件。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/59670324faffa947ee9f4c3934b0f3ad.webp&#34; alt=&#34;image.png|600&#34;&gt;&lt;/p&gt;
+&lt;p&gt;讨厌一切打字之外的劳动，所以总是在找更无痛的编辑方式。非常依赖 obsidian 的各种 hotkey 以避免敲键盘时还得调格式或是分心挪鼠标。比如 Ctrl + K 插入 markdown 链接格式 &lt;code&gt;[]()&lt;/code&gt; ，Ctrl、shift、fn 和方向键的组合以选中不同文字等等。&lt;/p&gt;
+&lt;h3 id=&#34;图片&#34;&gt;图片&lt;/h3&gt;
+&lt;p&gt;用到的工具如下。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;手机截图和照片：Google Photos&lt;/li&gt;
+&lt;li&gt;电脑截图：Snipaste&lt;/li&gt;
+&lt;li&gt;图床管理：PicList&lt;/li&gt;
+&lt;li&gt;Obsidian 图片上传插件：Image auto upload&lt;/li&gt;
+&lt;li&gt;Object storage：Backblaze&lt;/li&gt;
+&lt;li&gt;Backblaze private bucket 转为公开及添加图片缓存： Cloudflare Worker&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;刚建博客时我用 GitHub 仓库当图床，靠的是 Picgo + Image auto upload 插件自动上传。因为觉得这不是一个长久之道且不太正当，最近把图片全都传到了 Backblaze 的 object storage，前置设置变得复杂了些，但逻辑还是一致的。&lt;/p&gt;
+&lt;p&gt;这个流程是：&lt;/p&gt;
+&lt;p&gt;打开 Google Photos（使用 Chrome 的 Install App 功能添加到桌面），Ctrl C。电脑上的截图则是 fn + f1 （snipaste 截图快捷键），Ctrl C。&lt;/p&gt;
+&lt;p&gt;打开 Obsidian 文档， Ctrl V。如果有多张照片/截图，还可以先多次 Ctrl C，再使用 Win + V 打开系统 clipboard （如下图）多次粘贴。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/5adbfbfc24ca73891c46b47f27e34da4.webp&#34; alt=&#34;image.png|600&#34;&gt;&lt;/p&gt;
+&lt;p&gt;执行粘贴动作后 Image atuo upload 插件自动调用 PicList，PicList 将图片重命名、去除 exif data、转格式为 webp 后上传至 Backblaze，返回 markdown 图片链接，像上图 Ctrl V 后最终呈现在 Obsidan 里的是 &lt;code&gt;![image.png|600](https://misty-limit-424f.allison-00c.workers.dev/2025/01/c73894ff0eebabc1c0eccfa07ebe5f4a.webp)&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;Cloudflare Worker 起的作用是通过 application key 访问 Backblaze 的 private bucket 将图片缓存并生成一个 Worker 链接使之公开可见。在 PicList 中设定自定义域名，也就是 Worker 地址，返回的是转义后的链接，避免个人 bucket 地址暴露，同时还利用 Cloudflare 的缓存减少对 Object Storage 的访问。唯一的问题是，国内 IP 看不到 Cloudflare 的图片，但这不是我能控制的了。&lt;/p&gt;
+&lt;p&gt;实现过程颇为复杂，等我试验一段时间确认完全没问题会再写详细操作，但后续的维护很轻松，插入图片所有我进行的只是两个键盘动作，Ctrl C、Ctrl V 而已。&lt;/p&gt;
+&lt;h2 id=&#34;审校&#34;&gt;审校&lt;/h2&gt;
+&lt;p&gt;全部写完会在 Obsidian 里右击文档 tab 选择在默认 app 中打开，也就是 VS Code，利用 VS Code 的 markdown 插件修正格式，多余空格、空行等等，并且通读一遍检查错字、标点符号、病句之类。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/c73894ff0eebabc1c0eccfa07ebe5f4a.webp&#34; alt=&#34;image.png|600&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;发布&#34;&gt;发布&lt;/h2&gt;
+&lt;p&gt;最后返回 Obsidan，快捷键移动文档到 post 文件夹，修改 draft 值为 false，再使用 git 插件一键 commit 和 sync。(隐藏的流程还有两个连环触发的 GitHub Action 但这实在是太长了此处略过。) 除非动了博客架构，比如改 CSS，添加 shortcode 之类，否则我不会在本地使用 &lt;code&gt;Hugo&lt;/code&gt; 以及 &lt;code&gt;Hugo server&lt;/code&gt;，嗯就是这么怕麻烦。&lt;/p&gt;
+&lt;p&gt;关联阅读：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+
+
+  
+
+&lt;a href=&#34;https://thewanderingallison.github.io/posts/obsidian_plugins&#34; &gt;我的 Obsidian 常用插件&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;
+
+
+  
+
+&lt;a href=&#34;https://thewanderingallison.github.io/posts/syncing_specific_folders_between_different_repositories&#34; &gt;Syncing Specific Folders Between Different Repositories Using GitHub Actions&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;
+
+
+  
+
+&lt;a href=&#34;https://thewanderingallison.github.io/posts/blog_setting&#34; &gt;一个非技术流的blog建站流程&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+
+</item>
+    
+    <item>
 <title>“我没说过”</title>
 <link>https://thewanderingallison.github.io/posts/i_never_said_that/</link>
 <pubDate>Mon, 06 Jan 2025 00:00:00 +0000</pubDate>
