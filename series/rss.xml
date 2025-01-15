@@ -30,7 +30,7 @@
 &lt;p&gt;输入法是微软拼音（小鹤双拼），效率比全拼高多了！&lt;/p&gt;
 &lt;h2 id=&#34;排版&#34;&gt;排版&lt;/h2&gt;
 &lt;h3 id=&#34;文字&#34;&gt;文字&lt;/h3&gt;
-&lt;p&gt;Metadata，用 obsidian 的 template + 自定义快捷键自动插入。&lt;/p&gt;
+&lt;p&gt;Metadata，用 Obsidian 的 template + 自定义快捷键自动插入。&lt;/p&gt;
 &lt;p&gt;数字、中英文混排自动插入空格，标点符号自动补全，连续输入全角转半角等功能依靠 Obsidian 的 Easy Typing 插件。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/59670324faffa947ee9f4c3934b0f3ad.webp&#34; alt=&#34;image.png|600&#34;&gt;&lt;/p&gt;
 &lt;p&gt;讨厌一切打字之外的劳动，所以总是在找更无痛的编辑方式。非常依赖 obsidian 的各种 hotkey 以避免敲键盘时还得调格式或是分心挪鼠标。比如 Ctrl + K 插入 markdown 链接格式 &lt;code&gt;[]()&lt;/code&gt; ，Ctrl、shift、fn 和方向键的组合以选中不同文字等等。&lt;/p&gt;
@@ -56,7 +56,7 @@
 &lt;p&gt;全部写完会在 Obsidian 里右击文档 tab 选择在默认 app 中打开，也就是 VS Code，利用 VS Code 的 markdown 插件修正格式，多余空格、空行等等，并且通读一遍检查错字、标点符号、病句之类。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/c73894ff0eebabc1c0eccfa07ebe5f4a.webp&#34; alt=&#34;image.png|600&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;发布&#34;&gt;发布&lt;/h2&gt;
-&lt;p&gt;最后返回 Obsidan，快捷键移动文档到 post 文件夹，修改 draft 值为 false，再使用 git 插件一键 commit 和 sync。(隐藏的流程还有两个连环触发的 GitHub Action 但这实在是太长了此处略过。) 除非动了博客架构，比如改 CSS，添加 shortcode 之类，否则我不会在本地使用 &lt;code&gt;Hugo&lt;/code&gt; 以及 &lt;code&gt;Hugo server&lt;/code&gt;，嗯就是这么怕麻烦。&lt;/p&gt;
+&lt;p&gt;最后返回 Obsidian，快捷键移动文档到 post 文件夹，修改 draft 值为 false，再使用 git 插件一键 commit 和 sync。(隐藏的流程还有两个连环触发的 GitHub Action 但这实在是太长了此处略过。) 除非动了博客架构，比如改 CSS，添加 shortcode 之类，否则我不会在本地使用 &lt;code&gt;Hugo&lt;/code&gt; 以及 &lt;code&gt;Hugo server&lt;/code&gt;，嗯就是这么怕麻烦。&lt;/p&gt;
 &lt;p&gt;关联阅读：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
