@@ -371,8 +371,8 @@
 
 
 &lt;a href=&#34;https://vercel.com/account/settings&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;Account Settings&lt;/a&gt;
-里一直拉到最下，找到 Vercel ID，复制。
-&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140043676.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+里一直拉到最下，找到 Vercel ID，复制。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140043676.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;VERCEL_PROJECT_ID:&lt;br&gt;
 在对应的 Project &lt;code&gt;Settings&lt;/code&gt; 找到 Project ID，复制。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140046263.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
