@@ -205,7 +205,7 @@ Set WshShell = Nothing
 </code></pre><p>替换相应路径，再为 vb 文件创建一个桌面快捷方式，之后启动这个快捷方式，就可以自动打开 Obsidian 和 Piclist，上面的 bat 脚本在后台运行，之后退出 Obsidian 时 PicList 也会自动关闭。</p>
 <p>另一个则是关于我的读书记录。</p>
 <p>之前我是从博客同步的书影音 CSV 文件里手动复制，再给标题加 <code>###</code>和 shortcode 格式，即使每次用上 alt + shift 批量编辑多条信息我也觉得很烦。因为我几乎每个月都要处理这个问题，并且每次都是十几甚至几十条，这种重复劳动也是太烦人。现在的方案是用 Python 要求输入日期，然后读取 CSV 文件内该时间段的 <code>title</code>、<code>id</code>、<code>comment</code> column，再按标记时间增序输出特定格式，如下：</p>
-<p><img src="https://misty-limit-424f.allison-00c.workers.dev/2025/01/python_outpug.png" alt="python_output"></p>
+<p><img src="https://misty-limit-424f.allison-00c.workers.dev/2025/01/python_output.png" alt="python_output"></p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#000;font-weight:bold">import</span> <span style="color:#555">pandas</span> <span style="color:#000;font-weight:bold">as</span> <span style="color:#555">pd</span>
 
 <span style="color:#000;font-weight:bold">def</span> <span style="color:#900;font-weight:bold">process_csv</span>():

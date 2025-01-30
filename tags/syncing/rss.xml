@@ -46,7 +46,7 @@ Set WshShell = Nothing
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;替换相应路径，再为 vb 文件创建一个桌面快捷方式，之后启动这个快捷方式，就可以自动打开 Obsidian 和 Piclist，上面的 bat 脚本在后台运行，之后退出 Obsidian 时 PicList 也会自动关闭。&lt;/p&gt;
 &lt;p&gt;另一个则是关于我的读书记录。&lt;/p&gt;
 &lt;p&gt;之前我是从博客同步的书影音 CSV 文件里手动复制，再给标题加 &lt;code&gt;###&lt;/code&gt;和 shortcode 格式，即使每次用上 alt + shift 批量编辑多条信息我也觉得很烦。因为我几乎每个月都要处理这个问题，并且每次都是十几甚至几十条，这种重复劳动也是太烦人。现在的方案是用 Python 要求输入日期，然后读取 CSV 文件内该时间段的 &lt;code&gt;title&lt;/code&gt;、&lt;code&gt;id&lt;/code&gt;、&lt;code&gt;comment&lt;/code&gt; column，再按标记时间增序输出特定格式，如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/python_outpug.png&#34; alt=&#34;python_output&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/python_output.png&#34; alt=&#34;python_output&#34;&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#555&#34;&gt;pandas&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#555&#34;&gt;pd&lt;/span&gt;
 
 &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#900;font-weight:bold&#34;&gt;process_csv&lt;/span&gt;():
