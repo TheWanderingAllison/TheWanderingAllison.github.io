@@ -246,7 +246,7 @@ Set WshShell = Nothing
     <span style="color:#998;font-style:italic"># Step 5: Format the output as Markdown</span>
     md_content <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;&#34;</span>
     <span style="color:#000;font-weight:bold">for</span> _, row <span style="color:#000;font-weight:bold">in</span> sorted_df<span style="color:#000;font-weight:bold">.</span>iterrows():
-        md_content <span style="color:#000;font-weight:bold">+=</span> f<span style="color:#d14">&#34;### {row[&#39;title&#39;]}</span><span style="color:#d14">\n\n</span><span style="color:#d14">&#34;</span>
+        md_content <span style="color:#000;font-weight:bold">+=</span> f<span style="color:#d14">&#34;###{row[&#39;title&#39;]}</span><span style="color:#d14">\n\n</span><span style="color:#d14">&#34;</span>
         md_content <span style="color:#000;font-weight:bold">+=</span> f<span style="color:#d14">&#34;{{<style>
      
     .db-card {

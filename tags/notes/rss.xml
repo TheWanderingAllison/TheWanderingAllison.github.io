@@ -87,7 +87,7 @@ Set WshShell = Nothing
     &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;# Step 5: Format the output as Markdown&lt;/span&gt;
     md_content &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
     &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;for&lt;/span&gt; _, row &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;in&lt;/span&gt; sorted_df&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;.&lt;/span&gt;iterrows():
-        md_content &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+=&lt;/span&gt; f&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;### {row[&amp;#39;title&amp;#39;]}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;\n\n&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;&lt;/span&gt;
+        md_content &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+=&lt;/span&gt; f&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;###{row[&amp;#39;title&amp;#39;]}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;\n\n&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;&lt;/span&gt;
         md_content &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+=&lt;/span&gt; f&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;{{
 }}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;\n\n&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;&lt;/span&gt;
         md_content &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+=&lt;/span&gt; f&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;{row[&amp;#39;comment&amp;#39;]}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;\n\n&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;&lt;/span&gt;
