@@ -86,12 +86,11 @@ Set WshShell = Nothing
     &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;# Step 5: Format the output as Markdown&lt;/span&gt;
     md_content &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
 
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;# for _, row in sorted_df.iterrows():&lt;/span&gt;
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;#     md_content += f&amp;#34;###{row[&amp;#39;title&amp;#39;]}\n\n&amp;#34;&lt;/span&gt;
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;#     md_content += f&amp;#34;{{
-}}\n\n&amp;#34;&lt;/span&gt;
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;#     md_content += f&amp;#34;{row[&amp;#39;comment&amp;#39;]}\n\n&amp;#34;&lt;/span&gt;
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;# （上面这段是正常代码但是 Hugo 会识别成 shortcode 所以只好姑且用 # 处理一下了。）&lt;/span&gt;
+    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;for&lt;/span&gt; _, row &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;in&lt;/span&gt; sorted_df&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;.&lt;/span&gt;iterrows():
+         md_content &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+=&lt;/span&gt; f&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;###{row[&amp;#39;title&amp;#39;]}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;\n\n&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;&lt;/span&gt;
+         md_content &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+=&lt;/span&gt; f&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;{{{/{&amp;lt;douban &lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;\&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;{row[&amp;#39;id&amp;#39;]}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;\&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt; &amp;gt;}/}}}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;\n\n&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;&lt;/span&gt;  
+         &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;# 取消反斜杠/&lt;/span&gt;
+         md_content &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+=&lt;/span&gt; f&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;{row[&amp;#39;comment&amp;#39;]}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;\n\n&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;&lt;/span&gt;
 
     &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;# Step 6: Save the output as an .md file&lt;/span&gt;
     output_folder &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;your_folder_path&amp;#34;&lt;/span&gt;  &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;# Replace &amp;#34;your_folder_path&amp;#34; with the actual path to your folder&lt;/span&gt;
