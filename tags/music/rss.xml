@@ -112,248 +112,6 @@ process_csv()
 </item>
         
     <item>
-<title>Cloudflare &#43; Backblaze &#43; PicList 搭建博客图床（无需自有域名）</title>
-<link>https://thewanderingallison.github.io/posts/image_hosting_for_blog-cloudflare&#43;backblaze-private-bucket&#43;piclistwithout-domain/</link>
-<pubDate>Mon, 27 Jan 2025 00:00:00 +0000</pubDate>
-      
-      <guid>https://thewanderingallison.github.io/posts/image_hosting_for_blog-cloudflare&#43;backblaze-private-bucket&#43;piclistwithout-domain/</guid>
-<description>
-    &lt;p&gt;(在火车上无聊于是开始写博客，我这精神真是感天动地…)&lt;/p&gt;
-&lt;p&gt;过去我用 Github 的仓库当图床，配合 PicGo 自动上传，但一来 GitHub 的仓库和单个文件都有大小限制，二来我觉得这多少是对 Github 的滥用，最近终于完成了新的图床配置并且运行良好，在这里记录下（写到后面太烦了开始中英夹杂，只求自己看懂就行，请见谅）。&lt;/p&gt;
-&lt;p&gt;在一众 object storage 服务商中（Cloudflare、Wasabi、AWS、Scaleway、IBM Cloud Object Storage、Azure、Oracle），Backblaze 是唯一不添加付款信息就可使用的服务，只是有限制条件，只能创建 private bucket。也可以付费 $1 进行验证后创建 public bucket。一美金不是问题，但我不想在还不够了解运作流程的情况下贸然添加支付信息，而且这个网络账号所关联的信息我会希望尽可能和现实身份隔离。&lt;/p&gt;
-&lt;p&gt;其他几个可参考的教程：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-
-
-&lt;a href=&#34;https://www.backblaze.com/docs/cloud-storage-deliver-private-backblaze-b2-content-through-cloudflare-cdn&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;Deliver Private Backblaze B2 Content Through Cloudflare CDN&lt;/a&gt;
-&lt;/li&gt;
-&lt;li&gt;
-
-
-&lt;a href=&#34;https://leonis.cc/sui-sui-nian/2023-11-17-deploy-backblaze-image-hosting.html&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;Cloudflare + Backblaze 实现免费的博客图床方案 - Leo’s blog&lt;/a&gt;
-&lt;/li&gt;
-&lt;li&gt;
-
-
-&lt;a href=&#34;https://blog.standat42.com/posts/image-hosting-backblaze-b2-private-cloudflare-workers-picgo/&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;Blog 图床方案：Backblaze B2 (私密桶) + Cloudflare Workers + PicGo | Standat&amp;rsquo;s Blog&lt;/a&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;我没有自己的域名，以上步骤对我不太适用，worker 部分全是根据自己需求写的，这篇只是过程，不是教程，请酌情参考。&lt;/p&gt;
-&lt;h3 id=&#34;backblaze&#34;&gt;Backblaze&lt;/h3&gt;
-&lt;p&gt;Backblaze free account plan:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Backblaze B2 has a free account with 10GB of storage. The free account includes 1GB of daily download bandwidth, 2,500 class B transactions connected to downloads and 2,500 class C transactions.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;对于博客图床来说是够用了。&lt;/p&gt;
-&lt;h4 id=&#34;创建-bucket&#34;&gt;创建 bucket&lt;/h4&gt;
-&lt;p&gt;在
-
-
-&lt;a href=&#34;https://www.backblaze.com/&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;官网&lt;/a&gt;
-注册账号，新建 private bucket，命名（尽可能复杂）。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/0a06394665391aa470f1613ec14a3fa2.webp&#34; alt=&#34;create b2 bucket|600&#34;&gt;&lt;/p&gt;
-&lt;p&gt;在Bucket Settings 中的 Bucket Info 内添加：&lt;code&gt;{&amp;quot;cache-control&amp;quot;: &amp;quot;public, max-age=86400&amp;quot;}&lt;/code&gt;，也可将数字调得更大，86400 是缓存一天。&lt;/p&gt;
-&lt;h4 id=&#34;创建-application-key&#34;&gt;创建 application key&lt;/h4&gt;
-&lt;p&gt;新建两个 application key。我是为了将 PicList 上传和 Cloudflare 访问区分开，前者的权限是 &lt;code&gt;Read and Write&lt;/code&gt;，后者则只是 &lt;code&gt;Read Only&lt;/code&gt;。不介意的话也可以只建一个，但权限就需要设置成 &lt;code&gt;Read and Write&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/eec350dc4e1e5948c60991b33d4956a6.webp&#34; alt=&#34;create application key |600&#34;&gt;&lt;/p&gt;
-&lt;p&gt;接下来这个页面只会出现一次，复制下 &lt;code&gt;keyID&lt;/code&gt; 、&lt;code&gt;keyName&lt;/code&gt;、&lt;code&gt;applicationKey&lt;/code&gt; 的值。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/32bb309c1b638631a8966be569a2b359.webp&#34; alt=&#34;application key info|600&#34;&gt;&lt;/p&gt;
-&lt;h3 id=&#34;cloudflare&#34;&gt;Cloudflare&lt;/h3&gt;
-&lt;h4 id=&#34;创建-worker&#34;&gt;创建 worker&lt;/h4&gt;
-&lt;p&gt;复制以下代码。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-JavaScript&#34; data-lang=&#34;JavaScript&#34;&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;export&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;default&lt;/span&gt; {
-
-  &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;async&lt;/span&gt; fetch(request, env) {
-
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; API_KEY_ID &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; env.API_KEY_ID; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Application Key ID
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; API_KEY &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; env.API_KEY; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Application Key
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; BUCKET_NAME &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; env.BUCKET_NAME; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Bucket Name
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; KV_NAMESPACE &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; env.KV_NAMESPACE; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// KV namespace for rate limiting
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; ALLOWED_REFERERS &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;https://site1/&amp;#34;&lt;/span&gt;,
-                              &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;https://site2/&amp;#34;&lt;/span&gt;,
-                              &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;https://site3/&amp;#34;&lt;/span&gt;,
-                              &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;https://localhost:1313/&amp;#34;&lt;/span&gt;
-                            ]; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// List of allowed referers
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; MAX_REQUESTS_PER_DAY &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;1000&lt;/span&gt;; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Limit to 1000 requests per day
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; url &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;new&lt;/span&gt; URL(request.url);
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; filePath &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; url.pathname.slice(&lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Extract file path from URL
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;!&lt;/span&gt;filePath) {
-      &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;new&lt;/span&gt; Response(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;File path not provided&amp;#34;&lt;/span&gt;, { status&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;400&lt;/span&gt; });
-    }
-
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Step 1: Validate Referer Header
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; referer &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; request.headers.get(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;Referer&amp;#34;&lt;/span&gt;);
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; isAllowedReferer &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt;
-      &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;!&lt;/span&gt;referer &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;||&lt;/span&gt; ALLOWED_REFERERS.some((allowed) =&amp;gt; referer.includes(allowed));
-
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;!&lt;/span&gt;isAllowedReferer) {
-      &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;new&lt;/span&gt; Response(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;Invalid referer&amp;#34;&lt;/span&gt;, { status&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;403&lt;/span&gt; });
-    }
-
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Access Cloudflare Cache API
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; cache &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; caches.&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;default&lt;/span&gt;;
-
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Check if the response is already in cache
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; cachedResponse &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;await&lt;/span&gt; cache.match(request);
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;if&lt;/span&gt; (cachedResponse) {
-      console.log(&lt;span style=&#34;color:#d14&#34;&gt;`Cache hit for: &lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;filePath&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;);
-      &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;return&lt;/span&gt; cachedResponse; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Serve from cache
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    }
-
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Step 2: Rate Limiting using KV
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; currentDate &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#0086b3&#34;&gt;Date&lt;/span&gt;().toISOString().split(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;T&amp;#34;&lt;/span&gt;)[&lt;span style=&#34;color:#099&#34;&gt;0&lt;/span&gt;]; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// YYYY-MM-DD
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; requestCountKey &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;currentDate&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;filePath&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;let&lt;/span&gt; requestCount &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;await&lt;/span&gt; KV_NAMESPACE.get(requestCountKey)) &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;0&lt;/span&gt;;
-
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;if&lt;/span&gt; (requestCount &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;&amp;gt;=&lt;/span&gt; MAX_REQUESTS_PER_DAY) {
-      &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;new&lt;/span&gt; Response(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;Daily limit reached for this file&amp;#34;&lt;/span&gt;, { status&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;429&lt;/span&gt; });
-    }
-
-    requestCount &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#0086b3&#34;&gt;parseInt&lt;/span&gt;(requestCount) &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;1&lt;/span&gt;;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;await&lt;/span&gt; KV_NAMESPACE.put(requestCountKey, requestCount, { expirationTtl&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;86400&lt;/span&gt; }); &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Reset every 24 hours
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-    console.log(&lt;span style=&#34;color:#d14&#34;&gt;`Request count for &lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;filePath&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;: &lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;requestCount&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;);
-
-    console.log(&lt;span style=&#34;color:#d14&#34;&gt;`Cache miss for: &lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;filePath&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;. Fetching from Backblaze.`&lt;/span&gt;);
-
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Step 3: Authenticate with Backblaze
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; authResponse &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;await&lt;/span&gt; fetch(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;https://api.backblazeb2.com/b2api/v2/b2_authorize_account&amp;#34;&lt;/span&gt;, {
-      headers&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; {
-        Authorization&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#d14&#34;&gt;`Basic &lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;btoa(&lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;API_KEY_ID&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;API_KEY&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;)&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;,
-      },
-    });
-
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; authResponseText &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;await&lt;/span&gt; authResponse.text();
-
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;!&lt;/span&gt;authResponse.ok) {
-      &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;new&lt;/span&gt; Response(&lt;span style=&#34;color:#d14&#34;&gt;`Authorization failed: &lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;authResponseText&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;, { status&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;500&lt;/span&gt; });
-    }
-
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; authData &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; JSON.parse(authResponseText);
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; authToken &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; authData.authorizationToken;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; downloadUrl &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; authData.downloadUrl; &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Base URL for the bucket
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Step 4: Construct the file URL
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; b2FileUrl &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;downloadUrl&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;/file/&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;BUCKET_NAME&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;filePath&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;;
-
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Step 5: Fetch the file from Backblaze
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; fileResponse &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;await&lt;/span&gt; fetch(b2FileUrl, {
-      headers&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; {
-        Authorization&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; authToken,
-      },
-    });
-
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;!&lt;/span&gt;fileResponse.ok) {
-      &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; errorText &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;await&lt;/span&gt; fileResponse.text();
-      &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;new&lt;/span&gt; Response(&lt;span style=&#34;color:#d14&#34;&gt;`Failed to fetch file from Backblaze: &lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;${&lt;/span&gt;errorText&lt;span style=&#34;color:#d14&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;`&lt;/span&gt;, { status&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#099&#34;&gt;404&lt;/span&gt; });
-    }
-
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Clone the response to store in cache
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;const&lt;/span&gt; responseToCache &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;new&lt;/span&gt; Response(fileResponse.body, {
-      headers&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; {
-        &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;Content-Type&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; fileResponse.headers.get(&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;Content-Type&amp;#34;&lt;/span&gt;),
-        &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;Cache-Control&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;public, max-age=31536000&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Cache for 1 year
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;      },
-    });
-
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Store the response in cache
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;await&lt;/span&gt; cache.put(request, responseToCache.clone());
-    &lt;span style=&#34;color:#998;font-style:italic&#34;&gt;// Return the fetched response to the client
-&lt;/span&gt;&lt;span style=&#34;color:#998;font-style:italic&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;return&lt;/span&gt; responseToCache;
-  },
-};
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;几个自定义的值：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;ALLOWED_REFERERS&lt;/code&gt;: 允许引用该图片地址的网站&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;MAX_REQUESTS_PER_DAY&lt;/code&gt;：cloudflare 每日最多授权访问 backblaze 的次数&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;max-age&lt;/code&gt;：cloudflare 缓存时间，我直接设置成了一年。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;这个 worker 的作用是使用 application key 访问 private bucket 获取图片地址缓存到 cloudflare 并生成一个公开可见的 cloudflare worker 地址。加上 ALLOWED_REFERERS 是避免外站引用，毕竟我的免费账户流量有限，同时在没有 header 的情况下在我的 Obsidian 里可以预览。&lt;/p&gt;
-&lt;p&gt;另外绑定 KV Namespace 设置 Cloudflare 每日可对 Backblaze 发出 request 次数，这是为了防止 class c transition 超标，之前有一天很莫名地 cloudflare 对 backblaze 请求 authorize 2000 多次，所以我加上这个以防万一。&lt;/p&gt;
-&lt;h4 id=&#34;创建-kv-namespace&#34;&gt;创建 KV Namespace&lt;/h4&gt;
-&lt;p&gt;写不动了看 ChatGPT 写的吧。&lt;/p&gt;
-&lt;h5 id=&#34;create-a-kv-namespace&#34;&gt;Create a KV Namespace&lt;/h5&gt;
-&lt;pre&gt;&lt;code&gt;- Go to your Cloudflare dashboard.
-- Navigate to **Workers** &amp;gt; **KV** &amp;gt; **Create a Namespace**.
-- Give your namespace a name (e.g., `daily-usage-tracker`).
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h5 id=&#34;bind-the-namespace-to-your-worker&#34;&gt;Bind the Namespace to Your Worker&lt;/h5&gt;
-&lt;pre&gt;&lt;code&gt;- After creating the namespace, you&#39;ll need to bind it to your Worker.
-- Go to your Worker script in the Cloudflare dashboard.
-- Under the **Settings** tab, find the **KV Namespace Bindings** section.
-- Add a binding by giving it a name (e.g., `KV_NAMESPACE`) and selecting the namespace you created earlier.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h5 id=&#34;use-the-namespace-in-your-script&#34;&gt;Use the Namespace in Your Script&lt;/h5&gt;
-&lt;pre&gt;&lt;code&gt;- The binding (`KV_NAMESPACE`) will be available in the `env` object passed to your Worker script.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4 id=&#34;创建-secrets&#34;&gt;创建 secrets&lt;/h4&gt;
-&lt;p&gt;在 worker 设置里新建以下 secrets：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;API_KEY_ID&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;API_KEY&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;BUCKET_NAME&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;值是上面用于 cloudflare 的 read only 的application key 对应内容。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/6a533b3f68f6af917986059c91c99a8f.webp&#34; alt=&#34;worker secrets|600&#34;&gt;&lt;/p&gt;
-&lt;h3 id=&#34;piclist&#34;&gt;Piclist&lt;/h3&gt;
-&lt;p&gt;
-
-
-&lt;a href=&#34;https://piclist.cn/&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;Official document&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;PicGo 也支持 S3 图床但需要另外安装插件，而不知是不是这个项目久不维护了，安装插件频繁报错，之前我装 exif remover 时就费了很大功夫，重装 Npm packages，设置 npm proxy 等等等等，而 PicList 内置了这些功能，索性直接迁移了。&lt;/p&gt;
-&lt;p&gt;下载了 PicList Windows exe 程序又安装不上，微软什么毛病，头大，只能用命令行安装，那又先得安装 scope。&lt;/p&gt;
-&lt;h4 id=&#34;install-scope&#34;&gt;Install scope&lt;/h4&gt;
-&lt;p&gt;Open a PowerShell terminal (version 5.1 or later) and from the PS C:&amp;gt; prompt, run:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;How to open PowerShell from PS C:&amp;gt; prompt&lt;/p&gt;
-&lt;p&gt;Press &lt;code&gt;Windows + R&lt;/code&gt;, type &lt;code&gt;powershell&lt;/code&gt;, and hit Enter.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;
-&lt;span style=&#34;color:#0086b3&#34;&gt;cd&lt;/span&gt; C:&lt;span style=&#34;color:#d14&#34;&gt;\
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;install-piclist&#34;&gt;Install Piclist&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;
-scoop bucket add lemon https://github.com/hoilc/scoop-lemon
-scoop install lemon/piclist
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;import-picgo-config&#34;&gt;Import Picgo config&lt;/h4&gt;
-&lt;p&gt;PicGo 设置可以一键导入，如果已经在那边用上了 S3 或其他图床就无需再配置。&lt;/p&gt;
-&lt;h4 id=&#34;config-s3-account&#34;&gt;Config s3 account&lt;/h4&gt;
-&lt;p&gt;来设置 PicList 里的 S3 图床，要填的是以下几栏。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;AccessKeyID：&lt;/li&gt;
-&lt;li&gt;SecretAccessKey：&lt;/li&gt;
-&lt;li&gt;Bucket： bucket name&lt;/li&gt;
-&lt;li&gt;Self Endpoint： &lt;code&gt;https://{endpoint}&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;Set ACL：private&lt;/li&gt;
-&lt;li&gt;Self Custom URL：cloudflare worker 地址&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://misty-limit-424f.allison-00c.workers.dev/2025/01/bca9f0143a7535845c09f625413089e1.webp&#34; alt=&#34;PicList Config|600&#34;&gt;&lt;/p&gt;
-&lt;h3 id=&#34;obsidian&#34;&gt;Obsidian&lt;/h3&gt;
-&lt;p&gt;Obsidian 里的 Image auto upload 插件对 PicGo 和PicList 都适用，以前安装过就不用再变动了。&lt;/p&gt;
-&lt;p&gt;具体我的图片上传流程可见 
-
-
-  
-
-&lt;a href=&#34;https://thewanderingallison.github.io/posts/my_blogging_workflow&#34; &gt;我的博客写作流程&lt;/a&gt;
-。&lt;/p&gt;
-
-</description>
-
-</item>
-        
-    <item>
 <title>2024九十月读书记录</title>
 <link>https://thewanderingallison.github.io/posts/20241031/</link>
 <pubDate>Fri, 24 Jan 2025 00:00:00 +0000</pubDate>
@@ -834,6 +592,62 @@ scoop install lemon/piclist
 &lt;p&gt;在 Obsidian 提交试试看，成功！&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140101239.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;题外话，抛开 N 多半成品草稿来解决临时问题，难怪博客圈子里技术文章多呢。一是只要想折腾，就会面对层出不穷的新麻烦；二是只要问题被解决，这种内容写起来就飞快！&lt;/p&gt;
+
+</description>
+
+</item>
+        
+    <item>
+<title>一份非科学的 About Me 报告</title>
+<link>https://thewanderingallison.github.io/posts/unscientific_reports_about_me/</link>
+<pubDate>Sun, 08 Dec 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://thewanderingallison.github.io/posts/unscientific_reports_about_me/</guid>
+<description>
+    &lt;p&gt;我对网上的各种测试是属于虽然不信但看到就做……有时看别人自我介绍必报 MBTI 而且还言之凿凿 XX 人格必如何如何，很难不觉得这简直是新时代玄学一种。不过用这些起码比自报籍贯、学历、收入等等要好。那就用这些不科学的测试来描述一下我自己吧！&lt;/p&gt;
+&lt;h2 id=&#34;mbti&#34;&gt;MBTI&lt;/h2&gt;
+&lt;p&gt;十几年前就做过，当时是INTJ，这几年 MBTI 大火就又做了一次，结果不变但稍微记住了比例，I 和 T 是压倒性的 90%多，J 则只有 50%多一点点，N 是干嘛的我忘了……&lt;/p&gt;
+&lt;h2 id=&#34;九型人格httpsenneataocomtest&#34;&gt;
+
+
+&lt;a href=&#34;https://enneatao.com/test&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;九型人格&lt;/a&gt;
+&lt;/h2&gt;
+&lt;p&gt;我也不知道这是什么理论，但是结果非常满意，是猫头鹰呢！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412082208430.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;至于 Tritype， 这个测试要付费看，我在网上随便搜了个解释，如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412082211233.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;依恋类型测试httpswwwidrlabscomcnattachment-styletestphp&#34;&gt;
+
+
+&lt;a href=&#34;https://www.idrlabs.com/cn/attachment-style/test.php&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;依恋类型测试&lt;/a&gt;
+&lt;/h2&gt;
+&lt;p&gt;这我简直太清楚了，不用做都知道绝对回避型，果然。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412082216501.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;测试里对该类型的解释：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;放松—回避型（轻蔑型）：这一象限的人往往对他人持悲观态度，他们更喜欢保持距离，防止自己的自主权和隐私受到侵犯。放松—回避型人格往往会坚定地相信他们非常与众不同，以至于真正的亲密关系并不重要。 他们可能有配偶和家庭，甚至在一个由朋友和相识的人组成的稳定网络中也有牢固的锚点，但最终，在需要情感依赖和亲密关系时，他们往往会避免建立关系。与紧张—回避型的人不同，轻蔑型人格往往会将自己内心最深处的感受和观点保留在心里，他们往往有一种根深蒂固的信念，认为别人的意见稍显无关紧要，甚至平庸。 因此，许多轻蔑型的人通常很善于伪装，也就是说，他们会分享自己内心深处的想法，而实际上，他们只是在安抚别人，从不让他们接近。&lt;/p&gt;
+&lt;p&gt;这些人独立自主，并以此为傲，通常能在社交操控和自我约束方面取得非凡的成就，但缺点是，他们可能很难戒掉在独处时享受的、可以在没有他人陪伴的情况下用来自我安慰的坏习惯（如喝酒或吸烟）。对于别人期望他们履行的职责，他们往往不感兴趣或非常懈怠，但另一方面，他们往往很有创意（因为他们不会因为必须满足群体的期望而受到牵制）。最后，由于他们在受到攻击和批评时非常放松和冷静，他们往往也是聪明的风险承担者。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;the-four-tendencies-quizhttpsgretchenrubincomquizthe-four-tendencies-quiz&#34;&gt;
+
+
+&lt;a href=&#34;https://gretchenrubin.com/quiz/the-four-tendencies-quiz/&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;The Four Tendencies Quiz&lt;/a&gt;
+&lt;/h2&gt;
+&lt;p&gt;可以说结果也是毫不意外，该说我对自己的认知还挺清晰吗，
+
+
+&lt;a href=&#34;https://gretchenrubin.com/wp-content/uploads/2022/10/Rebel-Report.pdf&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;Rebel&lt;/a&gt;
+ 。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I do what I want, in my own way. If you try to make me do something-even if I try to make myself do something-I&amp;rsquo;m less likely to do it.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;真是膝盖中箭，很多时候我正是如此的拧巴又叛逆。&lt;/p&gt;
+&lt;p&gt;报告里四个类型的比例大概是：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;According to Rubin&amp;rsquo;s research, 41 percent of all people are Obligers. Almost a quarter of the population, 24 percent, are Questioners. The other two Tendencies are less common. Nineteen percent of people are Upholders, and 17 percent are Rebels.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;而各类型的具体描述如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412082244497.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
 
 </description>
 
