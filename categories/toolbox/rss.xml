@@ -7,12 +7,81 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-zh</language>
         <copyright>MIT</copyright>
-        <lastBuildDate>Thu, 30 Jan 2025 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Tue, 04 Feb 2025 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://thewanderingallison.github.io/categories/toolbox/rss.xml" rel="self" type="application/rss+xml" />
     
     
        
+    <item>
+<title>简单装修3.0</title>
+<link>https://thewanderingallison.github.io/posts/blog_setting_decorations_3/</link>
+<pubDate>Tue, 04 Feb 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://thewanderingallison.github.io/posts/blog_setting_decorations_3/</guid>
+<description>
+    &lt;p&gt;每一个喊着不再给博客搞装修的人食言起来都飞快……&lt;/p&gt;
+&lt;h2 id=&#34;一些变动&#34;&gt;一些变动&lt;/h2&gt;
+&lt;h3 id=&#34;rss&#34;&gt;RSS&lt;/h3&gt;
+&lt;p&gt;看统计数据发现有一些来自 
+
+
+&lt;a href=&#34;https://morerss.com&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;MoreRSS&lt;/a&gt;
+ 的访问，好奇看了下，不知谁把我的博客投上去了，我倒没有不高兴，但真心觉得没必要……我这种小小小小小博客有什么好投的？这网站也是挺神奇的，&lt;code&gt;.com&lt;/code&gt; 域名应该也不是很便宜吧，谁搞的这网站居然完全没有联系方式，网上也搜不到相关信息。&lt;/p&gt;
+&lt;p&gt;再一看它们也是会展示 RSS 内容的，我不仅是全文输出，而且还是默认输出所有文章，这就有点尴尬了，一两百篇内容在那页面上都拉不到头！太旧的文章也失去时效性了，所以调整了下 RSS 变成只显示最新十篇文章。&lt;/p&gt;
+&lt;p&gt;我也犹豫过要不要取消全文输出，Hugo 有个原生的 &lt;code&gt;&amp;lt;!--_more_--&amp;gt;&lt;/code&gt; 语句可以自动截断内容生成摘要，用起来很方便。只是想想我自己都喜欢直接在 Inoreader 里看全文，那己所不欲还是勿施于人吧。&lt;/p&gt;
+&lt;h3 id=&#34;自动更新页脚年份&#34;&gt;自动更新页脚年份&lt;/h3&gt;
+&lt;p&gt;Footer 上的 &lt;code&gt;Copyright © 2020-2025 Allison&lt;/code&gt; 年份过去我一直是手动改的，因为我这个主题是把 footer 的 copyright 作为 params 写在了 &lt;code&gt;config.toml&lt;/code&gt; 里，而 &lt;code&gt;toml&lt;/code&gt; 文件是没办法直接用 Go 的 &lt;code&gt;{{ now.Year }}&lt;/code&gt; 的，我就死心眼地每年年初手动调整。今年突然醒悟，我何必非要拘泥于 &lt;code&gt;config.toml&lt;/code&gt; 文件，我完全可以去 &lt;code&gt;footer.html&lt;/code&gt; 里改写嘛！又自动化了一项工作，开心！&lt;/p&gt;
+&lt;h3 id=&#34;友链&#34;&gt;友链&lt;/h3&gt;
+&lt;p&gt;很久之前加过一个 &lt;code&gt;details.html&lt;/code&gt; 的 shortcode，是为了把友链的失效链接放进 archive。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-html&#34; data-lang=&#34;html&#34;&gt;&amp;lt;&lt;span style=&#34;color:#000080&#34;&gt;details&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;{{&lt;/span&gt; &lt;span style=&#34;color:#008080&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#008080&#34;&gt;or&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;(.&lt;/span&gt;&lt;span style=&#34;color:#008080&#34;&gt;Get&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#008080&#34;&gt;open&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#34;)&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#008080&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#008080&#34;&gt;Params&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#008080&#34;&gt;open&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;&amp;#34;)&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;}}&lt;/span&gt;&lt;span style=&#34;color:#008080&#34;&gt;open&lt;/span&gt;&lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;{{&lt;/span&gt; &lt;span style=&#34;color:#008080&#34;&gt;end&lt;/span&gt; &lt;span style=&#34;color:#a61717;background-color:#e3d2d2&#34;&gt;}}&lt;/span&gt;&amp;gt;
+
+    {{- $summary := cond .IsNamedParams (.Get &amp;#34;title&amp;#34;) (.Get 0) -}}
+
+    &amp;lt;&lt;span style=&#34;color:#000080&#34;&gt;summary&lt;/span&gt;&amp;gt;{{ $summary | .Page.RenderString }}&amp;lt;/&lt;span style=&#34;color:#000080&#34;&gt;summary&lt;/span&gt;&amp;gt;
+
+    &amp;lt;&lt;span style=&#34;color:#000080&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color:#008080&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;markdown-inner&amp;#34;&lt;/span&gt;&amp;gt;
+
+      {{ .Inner | .Page.RenderString }}
+
+    &amp;lt;/&lt;span style=&#34;color:#000080&#34;&gt;div&lt;/span&gt;&amp;gt;
+
+  &amp;lt;/&lt;span style=&#34;color:#000080&#34;&gt;details&lt;/span&gt;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;用起来就是下面这样：&lt;/p&gt;
+&lt;details &gt;&lt;summary&gt;点这里&lt;/summary&gt;
+    &lt;div class=&#34;markdown-inner&#34;&gt;
+      这里是隐藏内容。
+    &lt;/div&gt;
+  &lt;/details&gt;
+&lt;p&gt;现在链接倒是都能访问（但是新链接是靠我自己发现的，也是有点无奈），不过有几个超过一年都没有更新，这次就也暂时隐藏了。希望大家都多多更新啊！&lt;/p&gt;
+&lt;h3 id=&#34;托管博客到-vercel&#34;&gt;托管博客到 Vercel&lt;/h3&gt;
+&lt;p&gt;登陆 Vercel 账号连接 GitHub 上的 Hugo 仓库（不是 public 而是整个站）新建 project，在 project 设置里重命名 domain，我还是沿用了 &lt;code&gt;thewanderingallison&lt;/code&gt; 这个名字。&lt;/p&gt;
+&lt;p&gt;这时 Hugo  &lt;code&gt;config.toml&lt;/code&gt; 文件里的 &lt;code&gt;baseURL&lt;/code&gt; 还是原来的，想同时在 GitHub Pages 和 Vercel 上托管网站的话，有两种方案。&lt;/p&gt;
+&lt;p&gt;简单方案是直接在 Vercel project 的 &lt;code&gt;Environment Variables&lt;/code&gt; 里加一个 &lt;code&gt;HUGO_BASEURL&lt;/code&gt;，值写 Vercel 地址，我这个就是 &lt;code&gt;https://thewanderingallison.vercel.app&lt;/code&gt;，可以访问
+
+
+&lt;a href=&#34;https://thewanderingallison.vercel.app&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;这里&lt;/a&gt;
+  试试看。弊端是如果站内引用是完整地址而非相对地址的话，跳转的还是旧站地址。&lt;/p&gt;
+&lt;p&gt;另一个方法是在根目录下新建一个 &lt;code&gt;config.vercel.toml&lt;/code&gt; 和 &lt;code&gt;vecel.json&lt;/code&gt; 文件。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;vecel.json&lt;/code&gt; 的内容如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-json&#34; data-lang=&#34;json&#34;&gt;{
+  &lt;span style=&#34;color:#000080&#34;&gt;&amp;#34;buildCommand&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;hugo --config config.vercel.toml&amp;#34;&lt;/span&gt;,
+  &lt;span style=&#34;color:#000080&#34;&gt;&amp;#34;outputDirectory&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#d14&#34;&gt;&amp;#34;public&amp;#34;&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;而 &lt;code&gt;config.vercel.toml&lt;/code&gt; 则是可以复制原始的 &lt;code&gt;config.toml&lt;/code&gt; ，再更精细地调整站点设置，不仅仅是 &lt;code&gt;baseURL&lt;/code&gt; 了，站名、intro、navbar 等等都可以重定义。&lt;/p&gt;
+&lt;p&gt;还可以用类似思路把网站托管到 Netlify，我在另一个博客上试了下，步骤稍有不同但一样简单，就不详细写了。&lt;/p&gt;
+&lt;h2 id=&#34;一点犹豫&#34;&gt;一点犹豫&lt;/h2&gt;
+&lt;h3 id=&#34;要不要彻底转移到-vercel&#34;&gt;要不要彻底转移到 Vercel&lt;/h3&gt;
+&lt;p&gt;想变动是因为现在我的博客还可以在墙内访问，墙内访问也就罢了我没有那么在乎。更不能忍的是看到流量来源有百度、抖音、头条之类，以及零星几个来自飞书和 flomo，这让我非常不爽，我不喜欢这些产品，一点也不希望自己的网站和它们扯上关系。还有用 GitHub Pages 意味着这个 repo 是公开的，放到 Vercel 源码就可以隐藏。&lt;/p&gt;
+&lt;p&gt;不想变动的理由则是——我不喜欢变化，对目前这个 url 居然也生出了点感情。此外早期博文里的站内引用链接得改，这个可以靠写脚本完成，工作量不算大（可还是得我操作啊！）。还有 Disqus、GA、Umami、Bing Webmaster Tools 等一系列东西也得跟着变动，想到就头疼。&lt;/p&gt;
+&lt;h3 id=&#34;要不要停用-reaction&#34;&gt;要不要停用 reaction&lt;/h3&gt;
+&lt;p&gt;先后看到好几个博客加上了爱心 reaction，我还在犹豫时发现一个我不太喜欢的博客也用上了它并且一篇我更不喜欢的博文居然有 100 多赞！好了，彻底打消加上这个功能的念头。&lt;/p&gt;
+&lt;p&gt;而 Disqus 自带的这个 reaction 我一直嫌弃它有点累赘。我自己其实在互联网上极少点赞，过去在微博或者豆瓣是从来不点。等到了长毛象，尤其是在已注销的上一个账号上，有人几乎每条都点赞，却从来不跟我说话，导致我都有点压力。而其他互关的象友也会时不时点星，于是我渐渐也会礼尚往来一下。但我还是更倾向于留言，总觉得表达共鸣或者喜爱还是用语言比较好吧？我不是质疑其他人的习惯，我也当然理解点赞同样是表达友好，只是从我的角度来说，我不太看重这个。不过我的访客好像确实也会用到，就还是很纠结。&lt;/p&gt;
+
+</description>
+
+</item>
+        
     <item>
 <title>瞎折腾之博客流程优化</title>
 <link>https://thewanderingallison.github.io/posts/toolbox20250130/</link>
@@ -760,83 +829,6 @@ scoop install lemon/piclist
 
 &lt;a href=&#34;https://www.reddit.com/r/Blogging/comments/w1zj0a/how_old_is_your_blog_and_how_much_traffic_is_it/&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;How old is your blog, and how much traffic is it getting&lt;/a&gt;
 ），看到真实用户分享自己的数据也蛮有趣的。&lt;/p&gt;
-
-</description>
-
-</item>
-        
-    <item>
-<title>解决其他账号无法在 Vercel 创建部署问题</title>
-<link>https://thewanderingallison.github.io/posts/vercel-error_no-access-to-create-deployments/</link>
-<pubDate>Fri, 13 Dec 2024 00:00:00 +0000</pubDate>
-      
-      <guid>https://thewanderingallison.github.io/posts/vercel-error_no-access-to-create-deployments/</guid>
-<description>
-    &lt;p&gt;今天收到 Vercel 邮件：&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;We’re writing to notify you that &lt;strong&gt;Github_Account_A&lt;/strong&gt; is attempting to deploy a commit to &lt;strong&gt;Github_Account_B&lt;/strong&gt;&amp;rsquo;s projects on Vercel through GitHub, but they are not a member of the team.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;To resolve this issue, you can:&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Upgrade to Pro and add them as a collaborator on your Vercel team&lt;/li&gt;
-&lt;li&gt;If the user is already a member of your Vercel team, ensure their GitHub account is connected to their Vercel account on their Authentication Settings page&lt;/li&gt;
-&lt;li&gt;If applicable, make your repository public&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;而在 GitHub 中 commit 错误是：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140112470.webp&#34; alt=&#34;commit failed&#34;&gt;&lt;/p&gt;
-&lt;p&gt;从头描述一下问题，我有 A、B 两个博客，A 是目前这个，用的 Hugo + Github Pages 。B 是把 GitHub B 账号中的 Hugo 项目部署到 Vercel 并由 Vercel 自动编译。我的文档都在 Obsidian 里写，靠 Obsidian 里的 Git 插件一键 commit（用的 A 账号）。而为了让不同 Github 账号下的两个特定文件夹同步，之前写过
-
-
-  
-
-&lt;a href=&#34;https://thewanderingallison.github.io/posts/syncing_specific_folders_between_different_repositories&#34; &gt;步骤&lt;/a&gt;
- 。也就是说，B 博客的每次更新其实是由 A 账号 commit 再触发 Vercel 自动编译。而 Vercel 提醒，需要加钱升级成 pro 账户才能使用协作模式，否则不会认可由另一个账号提交的部署请求。（之前成功据说是 Vercel 的 bug，hobby 账户不能多人提交，而最近修复了这个问题。）&lt;/p&gt;
-&lt;p&gt;Stackoverflow 上有类似
-
-
-&lt;a href=&#34;https://stackoverflow.com/questions/79011901/&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;提问&lt;/a&gt;
-，最高赞是在 terminal 中切换邮箱，而我正是不想打开 terminal。采取了这个
-
-
-&lt;a href=&#34;https://stackoverflow.com/a/79030203&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;答案&lt;/a&gt;
-的方案，在这里简述下中文流程存个档。&lt;/p&gt;
-&lt;p&gt;一句话简述，停用原始 Vercel 自动编译，换用 GitHub Actions。&lt;/p&gt;
-&lt;h3 id=&#34;停用-vercel-自动编译&#34;&gt;停用 Vercel 自动编译&lt;/h3&gt;
-&lt;p&gt;在 Github 对应仓库中，Repository Settings -&amp;gt; GitHub Apps -&amp;gt; Vercel Config，选择 suspend 或者 uninstall。&lt;/p&gt;
-&lt;h3 id=&#34;获取-vercel-token-和-id&#34;&gt;获取 Vercel token 和 ID&lt;/h3&gt;
-&lt;p&gt;参见 GitHub 
-
-
-&lt;a href=&#34;https://github.com/orgs/vercel/discussions/3307&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;讨论&lt;/a&gt;
- 。&lt;/p&gt;
-&lt;p&gt;VERCEL_TOKEN:&lt;br&gt;
-登陆 Vercel 账号，在 Account Settings -&amp;gt; Tokens 创建新 Token，复制。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140042330.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;VERCEL_ORG_ID:&lt;br&gt;
-在 
-
-
-&lt;a href=&#34;https://vercel.com/account/settings&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;Account Settings&lt;/a&gt;
-里一直拉到最下，找到 Vercel ID，复制。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140043676.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;VERCEL_PROJECT_ID:&lt;br&gt;
-在对应的 Project &lt;code&gt;Settings&lt;/code&gt; 找到 Project ID，复制。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140046263.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
-&lt;h3 id=&#34;创建-github-repository-secrets&#34;&gt;创建 GitHub Repository Secrets&lt;/h3&gt;
-&lt;p&gt;进入 Hugo 项目仓库，Settings -&amp;gt; Secrets and variables -&amp;gt; Actions。&lt;/p&gt;
-&lt;p&gt;新建三个 Secrets，名字如下所示，填入上一步保存的各项值。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140053674.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
-&lt;h3 id=&#34;新建-github-actions&#34;&gt;新建 Github Actions&lt;/h3&gt;
-&lt;p&gt;访问 Vercel 的 
-
-
-&lt;a href=&#34;https://vercel.com/guides/how-can-i-use-github-actions-with-vercel&#34; target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34;&gt;document&lt;/a&gt;
-，复制里面的 workflow template，在仓库中新建两个 workflow 文件。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140056189.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;完成。&lt;/p&gt;
-&lt;p&gt;在 Obsidian 提交试试看，成功！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/TheWanderingAllison/blog/mater/202412140101239.webp&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;题外话，抛开 N 多半成品草稿来解决临时问题，难怪博客圈子里技术文章多呢。一是只要想折腾，就会面对层出不穷的新麻烦；二是只要问题被解决，这种内容写起来就飞快！&lt;/p&gt;
 
 </description>
 
